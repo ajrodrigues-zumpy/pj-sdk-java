@@ -1,6 +1,5 @@
 package inter.pix.location;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import inter.exceptions.SdkException;
 import inter.model.Config;
 import inter.model.Erro;
@@ -8,6 +7,7 @@ import inter.pix.model.FiltroConsultarLocations;
 import inter.pix.model.Location;
 import inter.pix.model.PaginaLocations;
 import inter.utils.HttpUtils;
+import inter.utils.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -46,7 +46,7 @@ public class ConsultarLocationsCadastradas {
                 + addfilters(filtro);
         String json = HttpUtils.callGet(config, url, ESCOPO_PIX_LOCATION_READ, "Erro ao consultar locations");
         try {
-            return new ObjectMapper().readValue(json, PaginaLocations.class);
+            return JsonUtils.read(json, PaginaLocations.class);
         } catch (IOException ioException) {
             log.error(GENERIC_EXCEPTION_MESSAGE, ioException);
             throw new SdkException(

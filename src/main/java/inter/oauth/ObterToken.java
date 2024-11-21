@@ -1,10 +1,10 @@
 package inter.oauth;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import inter.exceptions.SdkException;
 import inter.model.Config;
 import inter.model.RespostaObterToken;
 import inter.utils.HttpUtils;
+import inter.utils.JsonUtils;
 import inter.utils.SslUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpEntity;
@@ -51,7 +51,7 @@ public class ObterToken {
         HttpUtils.handleResponse(url, response, "Erro ao obter token", config.isControleRateLimit());
         HttpEntity body = response.getEntity();
         String json = EntityUtils.toString(body, "UTF-8");
-        RespostaObterToken respostaToken = new ObjectMapper().readValue(json, RespostaObterToken.class);
+        RespostaObterToken respostaToken = JsonUtils.read(json, RespostaObterToken.class);
         respostaToken.setCreatedAt(LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));
         return respostaToken;
     }

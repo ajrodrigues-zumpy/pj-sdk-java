@@ -1,13 +1,13 @@
 package inter.banking.pagamento;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import inter.banking.model.FiltroBuscarPagamentosDarf;
 import inter.banking.model.RetornoPagamentoDarf;
 import inter.exceptions.SdkException;
 import inter.model.Config;
 import inter.model.Erro;
 import inter.utils.HttpUtils;
+import inter.utils.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -27,7 +27,7 @@ public class BuscarPagamentosDarf {
                 + addfilters(filtro);
         String json = HttpUtils.callGet(config, url, ESCOPO_PAGAMENTO_BOLETO_READ, "Erro ao buscar pagamentos de DARF");
         try {
-            return new ObjectMapper().readValue(json, new TypeReference<List<RetornoPagamentoDarf>>() {
+            return JsonUtils.read(json, new TypeReference<List<RetornoPagamentoDarf>>() {
             });
         } catch (IOException ioException) {
             log.error(GENERIC_EXCEPTION_MESSAGE, ioException);

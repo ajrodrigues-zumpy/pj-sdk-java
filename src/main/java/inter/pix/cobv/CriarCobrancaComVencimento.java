@@ -1,12 +1,12 @@
 package inter.pix.cobv;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import inter.pix.model.CobrancaVencimento;
 import inter.pix.model.CobrancaVencimentoDetalhada;
 import inter.exceptions.SdkException;
 import inter.model.Config;
 import inter.model.Erro;
 import inter.utils.HttpUtils;
+import inter.utils.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -23,9 +23,9 @@ public class CriarCobrancaComVencimento {
         log.info("CriarCobrancaComVencimento {} {}", config.getClientId(), txid);
         String url = URL_PIX_COBRANCA_COM_VENCIMENTO.replace("AMBIENTE", config.getAmbiente()) + "/" + txid;
         try {
-            String json = new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(cobranca);
+            String json = JsonUtils.writePretty(cobranca);
             json = HttpUtils.callPut(config, url, ESCOPO_PIX_COBV_WRITE, "Erro ao criar cobrança com vencimento", json);
-            return new ObjectMapper().readValue(json, CobrancaVencimentoDetalhada.class);
+            return JsonUtils.read(json, CobrancaVencimentoDetalhada.class);
         } catch (IOException ioException) {
             log.error(GENERIC_EXCEPTION_MESSAGE, ioException);
             throw new SdkException(

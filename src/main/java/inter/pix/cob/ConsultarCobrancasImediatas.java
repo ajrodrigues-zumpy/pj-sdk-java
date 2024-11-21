@@ -1,6 +1,5 @@
 package inter.pix.cob;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import inter.exceptions.SdkException;
 import inter.model.Config;
 import inter.model.Erro;
@@ -8,6 +7,7 @@ import inter.pix.model.CobrancaDetalhada;
 import inter.pix.model.FiltroConsultarCobrancasImediatas;
 import inter.pix.model.PaginaCobrancas;
 import inter.utils.HttpUtils;
+import inter.utils.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -46,7 +46,7 @@ public class ConsultarCobrancasImediatas {
                 + addfilters(filtro);
         String json = HttpUtils.callGet(config, url, ESCOPO_PIX_COB_READ, "Erro ao consultar cobranças imediatas");
         try {
-            return new ObjectMapper().readValue(json, PaginaCobrancas.class);
+            return JsonUtils.read(json, PaginaCobrancas.class);
         } catch (IOException ioException) {
             log.error(GENERIC_EXCEPTION_MESSAGE, ioException);
             throw new SdkException(

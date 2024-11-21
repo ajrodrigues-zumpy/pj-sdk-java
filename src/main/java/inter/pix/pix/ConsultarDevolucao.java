@@ -1,11 +1,11 @@
 package inter.pix.pix;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import inter.exceptions.SdkException;
 import inter.model.Config;
 import inter.model.Erro;
 import inter.pix.model.DevolucaoDetalhada;
 import inter.utils.HttpUtils;
+import inter.utils.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -22,7 +22,7 @@ public class ConsultarDevolucao {
         String url = URL_PIX_PIX.replace("AMBIENTE", config.getAmbiente()) + "/" + e2eId + "/devolucao/" + id;
         String json = HttpUtils.callGet(config, url, ESCOPO_PIX_PIX_READ, "Erro ao consultar devolução");
         try {
-            return new ObjectMapper().readValue(json, DevolucaoDetalhada.class);
+            return JsonUtils.read(json, DevolucaoDetalhada.class);
         } catch (IOException ioException) {
             log.error(GENERIC_EXCEPTION_MESSAGE, ioException);
             throw new SdkException(

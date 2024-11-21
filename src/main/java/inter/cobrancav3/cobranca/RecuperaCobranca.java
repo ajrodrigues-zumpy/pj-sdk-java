@@ -1,11 +1,11 @@
 package inter.cobrancav3.cobranca;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import inter.cobrancav3.model.CobrancaRecuperada;
 import inter.exceptions.SdkException;
 import inter.model.Config;
 import inter.model.Erro;
 import inter.utils.HttpUtils;
+import inter.utils.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -23,7 +23,7 @@ public class RecuperaCobranca {
         String url = URL_COBRANCAS.replace("AMBIENTE", config.getAmbiente()) + "/" + codigoSolicitacao;
         String json = HttpUtils.callGet(config, url, ESCOPO_BOLETO_COBRANCA_READ, "Erro ao recuperar cobrança");
         try {
-            return new ObjectMapper().readValue(json, CobrancaRecuperada.class);
+            return JsonUtils.read(json, CobrancaRecuperada.class);
         } catch (IOException ioException) {
             log.error(GENERIC_EXCEPTION_MESSAGE, ioException);
             throw new SdkException(

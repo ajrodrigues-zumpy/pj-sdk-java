@@ -1,11 +1,11 @@
 package inter.cobrancav3.webhook;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import inter.exceptions.SdkException;
 import inter.model.Config;
 import inter.model.CriarWebhookRequest;
 import inter.model.Erro;
 import inter.utils.HttpUtils;
+import inter.utils.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -23,7 +23,7 @@ public class CriaWebhook {
         String url = URL_COBRANCAS_WEBHOOK.replace("AMBIENTE", config.getAmbiente());
         CriarWebhookRequest request = CriarWebhookRequest.builder().webhookUrl(webhookUrl).build();
         try {
-            String json = new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(request);
+            String json = JsonUtils.writePretty(request);
             HttpUtils.callPut(config, url, ESCOPO_BOLETO_COBRANCA_WRITE, "Erro ao criar webhook", json);
         } catch (IOException ioException) {
             log.error(GENERIC_EXCEPTION_MESSAGE, ioException);

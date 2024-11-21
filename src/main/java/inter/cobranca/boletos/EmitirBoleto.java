@@ -1,12 +1,12 @@
 package inter.cobranca.boletos;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import inter.cobranca.model.Boleto;
 import inter.cobranca.model.RespostaEmitirBoleto;
 import inter.exceptions.SdkException;
 import inter.model.Config;
 import inter.model.Erro;
 import inter.utils.HttpUtils;
+import inter.utils.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -23,9 +23,9 @@ public class EmitirBoleto {
         log.info("EmitirBoleto {} {}", config.getClientId(), boleto.getSeuNumero());
         String url = URL_BOLETOS.replace("AMBIENTE", config.getAmbiente());
         try {
-            String json = new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(boleto);
+            String json = JsonUtils.writePretty(boleto);
             json = HttpUtils.callPost(config, url, ESCOPO_BOLETO_COBRANCA_WRITE, "Erro ao emitir boleto", json);
-            return new ObjectMapper().readValue(json, RespostaEmitirBoleto.class);
+            return JsonUtils.read(json, RespostaEmitirBoleto.class);
         } catch (IOException ioException) {
             log.error(GENERIC_EXCEPTION_MESSAGE, ioException);
             throw new SdkException(

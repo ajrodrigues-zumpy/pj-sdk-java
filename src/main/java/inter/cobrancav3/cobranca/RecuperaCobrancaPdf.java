@@ -1,11 +1,11 @@
 package inter.cobrancav3.cobranca;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import inter.exceptions.SdkException;
 import inter.model.Config;
 import inter.model.Erro;
 import inter.model.RetornoPdf;
 import inter.utils.HttpUtils;
+import inter.utils.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.FileOutputStream;
@@ -25,7 +25,7 @@ public class RecuperaCobrancaPdf {
         String url = URL_COBRANCAS.replace("AMBIENTE", config.getAmbiente()) + "/" + codigoSolicitacao + "/pdf";
         String json = HttpUtils.callGet(config, url, ESCOPO_BOLETO_COBRANCA_READ, "Erro ao recuperar cobrança pdf");
         try {
-            RetornoPdf retornoPdf = new ObjectMapper().readValue(json, RetornoPdf.class);
+            RetornoPdf retornoPdf = JsonUtils.read(json, RetornoPdf.class);
             byte[] decodedBytes = Base64.getDecoder().decode(retornoPdf.getPdf());
             try (FileOutputStream stream = new FileOutputStream(arquivo)) {
                 stream.write(decodedBytes);

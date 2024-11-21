@@ -1,11 +1,11 @@
 package inter.cobranca.boletos;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import inter.cobranca.model.BoletoDetalhado;
 import inter.exceptions.SdkException;
 import inter.model.Config;
 import inter.model.Erro;
 import inter.utils.HttpUtils;
+import inter.utils.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -23,7 +23,7 @@ public class RecuperarBoletoDetalhado {
         String url = URL_BOLETOS.replace("AMBIENTE", config.getAmbiente()) + "/" + nossoNumero;
         String json = HttpUtils.callGet(config, url, ESCOPO_BOLETO_COBRANCA_READ, "Erro ao recuperar boleto detalhado");
         try {
-            return new ObjectMapper().readValue(json, BoletoDetalhado.class);
+            return JsonUtils.read(json, BoletoDetalhado.class);
         } catch (IOException ioException) {
             log.error(GENERIC_EXCEPTION_MESSAGE, ioException);
             throw new SdkException(

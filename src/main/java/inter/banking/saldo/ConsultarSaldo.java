@@ -1,11 +1,11 @@
 package inter.banking.saldo;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import inter.banking.model.Saldo;
 import inter.exceptions.SdkException;
 import inter.model.Config;
 import inter.model.Erro;
 import inter.utils.HttpUtils;
+import inter.utils.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -26,7 +26,7 @@ public class ConsultarSaldo {
         }
         String json = HttpUtils.callGet(config, url, ESCOPO_EXTRATO_READ, "Erro ao consultar saldo");
         try {
-            return new ObjectMapper().readValue(json, Saldo.class);
+            return JsonUtils.read(json, Saldo.class);
         } catch (IOException ioException) {
             log.error(GENERIC_EXCEPTION_MESSAGE, ioException);
             throw new SdkException(

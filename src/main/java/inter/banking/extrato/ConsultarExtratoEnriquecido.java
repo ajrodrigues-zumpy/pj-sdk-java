@@ -1,6 +1,5 @@
 package inter.banking.extrato;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import inter.banking.model.PaginaExtratoEnriquecido;
 import inter.banking.model.FiltroConsultarExtratoEnriquecido;
 import inter.banking.model.TransacaoEnriquecida;
@@ -8,6 +7,7 @@ import inter.exceptions.SdkException;
 import inter.model.Config;
 import inter.model.Erro;
 import inter.utils.HttpUtils;
+import inter.utils.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -47,7 +47,7 @@ public class ConsultarExtratoEnriquecido {
                 + addfilters(filtro);
         String json = HttpUtils.callGet(config, url, ESCOPO_EXTRATO_READ, "Erro ao consultar extrato enriquecido");
         try {
-            return new ObjectMapper().readValue(json, PaginaExtratoEnriquecido.class);
+            return JsonUtils.read(json, PaginaExtratoEnriquecido.class);
         } catch (IOException ioException) {
             log.error(GENERIC_EXCEPTION_MESSAGE, ioException);
             throw new SdkException(

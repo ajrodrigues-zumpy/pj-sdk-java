@@ -1,7 +1,5 @@
 package inter.cobrancav3.cobranca;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import inter.cobrancav3.model.FiltroRecuperarCobrancas;
 import inter.cobrancav3.model.Ordenacao;
 import inter.cobrancav3.model.PaginaCobrancas;
@@ -10,6 +8,7 @@ import inter.exceptions.SdkException;
 import inter.model.Config;
 import inter.model.Erro;
 import inter.utils.HttpUtils;
+import inter.utils.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -52,7 +51,7 @@ public class RecuperaColecaoCobrancas {
                 + addSort(ordenacao);
         String json = HttpUtils.callGet(config, url, ESCOPO_BOLETO_COBRANCA_READ, "Erro ao recuperar cobranças");
         try {
-            return new ObjectMapper().readValue(json, PaginaCobrancas.class);
+            return JsonUtils.read(json, PaginaCobrancas.class);
         } catch (IOException ioException) {
             log.error(GENERIC_EXCEPTION_MESSAGE, ioException);
             throw new SdkException(

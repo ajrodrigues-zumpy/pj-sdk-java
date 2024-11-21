@@ -1,6 +1,5 @@
 package inter.cobranca.boletos;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import inter.cobranca.model.BoletoDetalhado;
 import inter.cobranca.model.FiltroRecuperarBoletos;
 import inter.cobranca.model.Ordenacao;
@@ -9,6 +8,7 @@ import inter.exceptions.SdkException;
 import inter.model.Config;
 import inter.model.Erro;
 import inter.utils.HttpUtils;
+import inter.utils.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -49,7 +49,7 @@ public class RecuperarBoletos {
                 + addSort(ordenacao);
         String json = HttpUtils.callGet(config, url, ESCOPO_BOLETO_COBRANCA_READ, "Erro ao recuperar boletos");
         try {
-            return new ObjectMapper().readValue(json, PaginaBoletos.class);
+            return JsonUtils.read(json, PaginaBoletos.class);
         } catch (IOException ioException) {
             log.error(GENERIC_EXCEPTION_MESSAGE, ioException);
             throw new SdkException(

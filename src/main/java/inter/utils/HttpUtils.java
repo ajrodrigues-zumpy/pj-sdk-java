@@ -1,7 +1,6 @@
 package inter.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import inter.exceptions.CertificadoException;
 import inter.exceptions.ClientException;
 import inter.exceptions.SdkException;
@@ -158,7 +157,7 @@ public class HttpUtils {
         if (response.getStatusLine().getStatusCode() >= SERVER_ERROR_BASE) {
             HttpEntity body = response.getEntity();
             String json = EntityUtils.toString(body, StandardCharsets.UTF_8);
-            ServerException e = new ServerException(message, json.isEmpty() ? Erro.builder().title(response.getStatusLine().toString()).build() : new ObjectMapper().readValue(json, Erro.class));
+            ServerException e = new ServerException(message, json.isEmpty() ? Erro.builder().title(response.getStatusLine().toString()).build() : JsonUtils.read(json, Erro.class));
             logAndThrowException(e);
         } else if (response.getStatusLine().getStatusCode() >= CLIENT_ERROR_BASE) {
             if (response.getStatusLine().getStatusCode() == TOO_MANY_REQUESTS && rateLimitControl) {
@@ -168,7 +167,7 @@ public class HttpUtils {
             String json = EntityUtils.toString(body, StandardCharsets.UTF_8);
             Erro erro;
             try {
-                erro = json.isEmpty() ? Erro.builder().title(response.getStatusLine().toString()).build() : new ObjectMapper().readValue(json, Erro.class);
+                erro = json.isEmpty() ? Erro.builder().title(response.getStatusLine().toString()).build() : JsonUtils.read(json, Erro.class);
             } catch (JsonProcessingException e) {
                 erro = Erro.builder().title(response.getStatusLine().toString()).build();
             }

@@ -9,6 +9,7 @@ import inter.exceptions.SdkException;
 import inter.model.Config;
 import inter.model.Erro;
 import inter.utils.HttpUtils;
+import inter.utils.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -40,7 +41,7 @@ public class BuscarLotePagamentos {
             JSONObject jsonLote = (JSONObject) parser.parse(json);
             JSONArray jsonArray = (JSONArray) jsonLote.get("pagamentos");
             List<ItemLote> pagamentos = new ArrayList<>();
-            ObjectMapper objectMapper = new ObjectMapper();
+            ObjectMapper objectMapper = JsonUtils.getObjectMapper();
             if (jsonArray != null) {
                 for (JSONObject item : (Iterable<JSONObject>) jsonArray) {
                     String tipoPagamento = (String) item.get("tipoPagamento");
@@ -58,7 +59,7 @@ public class BuscarLotePagamentos {
             processamentoLote.setPagamentos(pagamentos);
             return processamentoLote;
             //]
-            //=return new ObjectMapper().readValue(json, ProcessamentoLote.class);
+            //=return JsonUtils.read(json, ProcessamentoLote.class);
         } catch (IOException | ParseException e) {
             log.error(GENERIC_EXCEPTION_MESSAGE, e);
             throw new SdkException(

@@ -1,12 +1,12 @@
 package inter.banking.pix;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import inter.banking.model.Pix;
 import inter.banking.model.RespostaIncluirPix;
 import inter.exceptions.SdkException;
 import inter.model.Config;
 import inter.model.Erro;
 import inter.utils.HttpUtils;
+import inter.utils.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -23,9 +23,9 @@ public class IncluirPix {
         log.info("IncluirPix {} {}", config.getClientId(), pix.getDescricao());
         String url = URL_BANKING_PAGAMENTO_PIX.replace("AMBIENTE", config.getAmbiente());
         try {
-            String json = new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(pix);
+            String json = JsonUtils.writePretty(pix);
             json = HttpUtils.callPost(config, url, ESCOPO_PAGAMENTO_PIX_WRITE, "Erro ao incluir pix", json);
-            return new ObjectMapper().readValue(json, RespostaIncluirPix.class);
+            return JsonUtils.read(json, RespostaIncluirPix.class);
         } catch (IOException ioException) {
             log.error(GENERIC_EXCEPTION_MESSAGE, ioException);
             throw new SdkException(

@@ -1,6 +1,5 @@
 package inter.banking.webhook;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import inter.banking.model.FiltroBuscarCallbacks;
 import inter.banking.model.PaginaCallbacks;
 import inter.banking.model.RespostaBuscarCallbacks;
@@ -8,6 +7,7 @@ import inter.exceptions.SdkException;
 import inter.model.Config;
 import inter.model.Erro;
 import inter.utils.HttpUtils;
+import inter.utils.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -52,7 +52,7 @@ public class ConsultarCallbacks {
                 + addfilters(filtro);
         String json = HttpUtils.callGet(config, url, ESCOPO_BANKING_WEBHOOK_BANKING_READ, "Erro ao recuperar callbacks");
         try {
-            return new ObjectMapper().readValue(json, PaginaCallbacks.class);
+            return JsonUtils.read(json, PaginaCallbacks.class);
         } catch (IOException ioException) {
             log.error(GENERIC_EXCEPTION_MESSAGE, ioException);
             throw new SdkException(

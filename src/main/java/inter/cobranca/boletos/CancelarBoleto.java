@@ -1,12 +1,12 @@
 package inter.cobranca.boletos;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import inter.cobranca.model.RequisicaoCancelarBoleto;
 import inter.cobranca.model.enums.MotivoCancelamento;
 import inter.exceptions.SdkException;
 import inter.model.Config;
 import inter.model.Erro;
 import inter.utils.HttpUtils;
+import inter.utils.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -24,7 +24,7 @@ public class CancelarBoleto {
         String url = URL_BOLETOS.replace("AMBIENTE", config.getAmbiente()) + "/" + nossoNumero + "/cancelar";
         RequisicaoCancelarBoleto request = RequisicaoCancelarBoleto.builder().motivoCancelamento(motivoCancelamento).build();
         try {
-            String json = new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(request);
+            String json = JsonUtils.writePretty(request);
             HttpUtils.callPost(config, url, ESCOPO_BOLETO_COBRANCA_WRITE, "Erro ao cancelar boleto", json);
         } catch (IOException ioException) {
             log.error(GENERIC_EXCEPTION_MESSAGE, ioException);

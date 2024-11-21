@@ -1,6 +1,5 @@
 package inter.banking.pagamento;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import inter.banking.model.ItemLote;
 import inter.banking.model.Lote;
 import inter.banking.model.RespostaIncluirPagamentosLote;
@@ -8,6 +7,7 @@ import inter.exceptions.SdkException;
 import inter.model.Config;
 import inter.model.Erro;
 import inter.utils.HttpUtils;
+import inter.utils.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -29,9 +29,9 @@ public class IncluirPagamentosLote {
                 .pagamentos(pagamentos)
                 .build();
         try {
-            String json = new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(request);
+            String json = JsonUtils.writePretty(request);
             json = HttpUtils.callPost(config, url, ESCOPO_PAGAMENTOS_LOTE_WRITE, "Erro ao incluir pagamentos em lote", json);
-            return new ObjectMapper().readValue(json, RespostaIncluirPagamentosLote.class);
+            return JsonUtils.read(json, RespostaIncluirPagamentosLote.class);
         } catch (IOException ioException) {
             log.error(GENERIC_EXCEPTION_MESSAGE, ioException);
             throw new SdkException(

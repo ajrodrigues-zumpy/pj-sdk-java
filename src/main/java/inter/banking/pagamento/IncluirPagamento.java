@@ -1,12 +1,12 @@
 package inter.banking.pagamento;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import inter.banking.model.PagamentoBoleto;
 import inter.banking.model.RespostaIncluirPagamento;
 import inter.exceptions.SdkException;
 import inter.model.Config;
 import inter.model.Erro;
 import inter.utils.HttpUtils;
+import inter.utils.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -23,9 +23,9 @@ public class IncluirPagamento {
         log.info("IncluirPagamento {} {}", config.getClientId(), pagamento.getCodBarraLinhaDigitavel());
         String url = URL_BANKING_PAGAMENTO.replace("AMBIENTE", config.getAmbiente());
         try {
-            String json = new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(pagamento);
+            String json = JsonUtils.writePretty(pagamento);
             json = HttpUtils.callPost(config, url, ESCOPO_PAGAMENTO_BOLETO_WRITE, "Erro ao incluir pagamento", json);
-            return new ObjectMapper().readValue(json, RespostaIncluirPagamento.class);
+            return JsonUtils.read(json, RespostaIncluirPagamento.class);
         } catch (IOException ioException) {
             log.error(GENERIC_EXCEPTION_MESSAGE, ioException);
             throw new SdkException(

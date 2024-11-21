@@ -1,12 +1,12 @@
 package inter.cobrancav3.cobranca;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import inter.cobrancav3.model.RequisicaoEmitirCobranca;
 import inter.cobrancav3.model.RespostaEmitirCobranca;
 import inter.exceptions.SdkException;
 import inter.model.Config;
 import inter.model.Erro;
 import inter.utils.HttpUtils;
+import inter.utils.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -23,9 +23,9 @@ public class EmiteCobranca {
         log.info("EmitirCobranca {} {}", config.getClientId(), requisicaoEmitirCobranca.getSeuNumero());
         String url = URL_COBRANCAS.replace("AMBIENTE", config.getAmbiente());
         try {
-            String json = new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(requisicaoEmitirCobranca);
+            String json = JsonUtils.writePretty(requisicaoEmitirCobranca);
             json = HttpUtils.callPost(config, url, ESCOPO_BOLETO_COBRANCA_WRITE, "Erro ao emitir cobrança", json);
-            return new ObjectMapper().readValue(json, RespostaEmitirCobranca.class);
+            return JsonUtils.read(json, RespostaEmitirCobranca.class);
         } catch (IOException ioException) {
             log.error(GENERIC_EXCEPTION_MESSAGE, ioException);
             throw new SdkException(
